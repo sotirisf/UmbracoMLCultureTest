@@ -1,0 +1,76 @@
+﻿@inherits UmbracoViewPage<ContentModels.Products>
+@using ContentModels = Umbraco.Web.PublishedModels;
+@{
+    Layout = "master.cshtml";
+}
+@Html.Partial("~/Views/Partials/SectionHeader.cshtml")
+
+<section class="section">
+
+    <div class="container">
+        <br /><h2>Direct Call, no culture passed</h2><br />
+        <div class="product-grid">
+            @Html.Action("GetProductsOldWayNoCultureSet", "Products", new { productRootId = Model.Id, defaultCurrency = Model.DefaultCurrency })
+        </div>
+        <br /><h2>Direct Call, culture passed</h2><br />
+
+        <div class="product-grid">
+            @Html.Action("GetProductsOldWayWithCulture", "Products", new { productRootId = Model.Id, defaultCurrency = Model.DefaultCurrency, culture = System.Threading.Thread.CurrentThread.CurrentCulture.Name })
+            @*}*@
+        </div>
+
+        <br /><h2>Ajax Call, no culture passed</h2><br />
+        <div class="product-grid ajaxcallnoculture">
+        </div>
+
+        <br /><h2>Ajax Call, culture passed</h2><br />
+        <div class="product-grid ajaxcallcultureset">
+        </div>
+
+        <br /><h2>Ajax Call, using IVariationContextAccessor</h2><br />
+        <div class="product-grid ajaxcallvariationcontext">
+        </div>
+    </div>
+</section>
+
+@section MoreScripts
+{
+    <script type="text/javascript">
+
+        $(document).ready(function () {
+            $.ajax({
+                type: "GET",
+                url: "/Umbraco/Surface/Products/GetProductsOldWayNoCultureSet",
+                contentType: "application/json; charset=utf-8",
+                data: {productRootId: '@Model.Id', defaultCurrency: '@Model.DefaultCurrency'},
+                success: function (result, status, xhr) {
+                    $('.ajaxcallnoculture').append(result);
+                }
+            });
+        });
+
+         $(document).ready(function () {
+            $.ajax({
+                type: "GET",
+                url: "/Umbraco/Surface/Products/GetProductsOldWayWithCulture",
+                contentType: "application/json; charset=utf-8",
+                data: {productRootId: '@Model.Id', defaultCurrency: '@Model.DefaultCurrency', culture: '@System.Threading.Thread.CurrentThread.CurrentCulture.Name'},
+                success: function (result, status, xhr) {
+                    $('.ajaxcallcultureset').append(result);
+                }
+            });
+         });
+
+          $(document).ready(function () {
+            $.ajax({
+                type: "GET",
+                url: "/Umbraco/Surface/Products2/GetProductsNewWay",
+                contentType: "application/json; charset=utf-8",
+                data: {productRootId: '@Model.Id', defaultCurrency: '@Model.DefaultCurrency', culture: '@System.Threading.Thread.CurrentThread.CurrentCulture.Name'},
+                success: function (result, status, xhr) {
+                    $('.ajaxcallvariationcontext').append(result);
+                }
+            });
+        });
+    </script>
+}

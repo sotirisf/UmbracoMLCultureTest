@@ -1,0 +1,12 @@
+﻿@using UmbracoMLCultureTest.Models
+
+@inherits Umbraco.Web.Mvc.UmbracoViewPage<IEnumerable<ProductViewModel>>
+    @foreach (ProductViewModel item in Model)
+    {
+<a href="@item.Url" class="product-grid__item" style="background-image: url('@item.PhotoUrl')">
+    <div class="product-grid__item__overlay">
+        <div class="product-grid__item__name">@item.Name</div>
+        <div class="product-grid__item__price">@item.DefaultCurrency @item.Price.ToString("F")</div>
+    </div>
+</a>
+    }
